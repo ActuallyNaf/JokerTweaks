@@ -1,0 +1,68 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+
+[[patches]]
+[patches.pattern]
+target = "game.lua"
+pattern = '''
+        j_square=           {order = 65,  unlocked = true, discovered = false, blueprint_compat = true, perishable_compat = false, eternal_compat = true, rarity = 1, cost = 4, name = "Square Joker", pos = {x=9,y=11}, set = "Joker", cost_mult = 1.0, config = {extra = {chips = 0, chip_mod = 4}}},
+'''
+position = "at"
+payload = '''
+        j_square=           {order = 65,  unlocked = true, discovered = false, blueprint_compat = true, perishable_compat = false, eternal_compat = true, rarity = 1, cost = 4, name = "Square Joker", pos = {x=9,y=11}, set = "Joker", cost_mult = 1.0, config = {extra = {chips = 0, chip_mod = 9}}},
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = '''
+                        if faces then
+                            local last_mult = self.ability.mult
+                            self.ability.mult = 0
+                            if last_mult > 0 then 
+                                return {
+                                    card = self,
+                                    message = localize('k_reset')
+                                }
+                            end
+                        else
+'''
+position = "at"
+payload = '''
+                        if not faces then
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "game.lua"
+pattern = '''
+        j_obelisk=          {order = 75,  unlocked = true, discovered = false, blueprint_compat = true, perishable_compat = false, eternal_compat = true, rarity = 3, cost = 8, name = "Obelisk",set = "Joker", config = {extra = 0.2, Xmult = 1}, pos = {x=9,y=12}},
+'''
+position = "at"
+payload = '''
+        j_obelisk=          {order = 75,  unlocked = true, discovered = false, blueprint_compat = true, perishable_compat = false, eternal_compat = true, rarity = 3, cost = 8, name = "Obelisk",set = "Joker", config = {extra = 0.15, Xmult = 1}, pos = {x=9,y=12}},
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = '''
+                        if reset then
+                            if self.ability.x_mult > 1 then
+                                self.ability.x_mult = 1
+                                return {
+                                    card = self,
+                                    message = localize('k_reset')
+                                }
+                            end
+                        else
+'''
+position = "at"
+payload = '''
+                        if not reset then
+'''
+match_indent = true
