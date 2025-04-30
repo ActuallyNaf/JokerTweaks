@@ -2,7 +2,7 @@
 --- MOD_NAME: Joker Tweaks
 --- MOD_ID: jokertweaks
 --- MOD_AUTHOR: [Naf]
---- MOD_DESCRIPTION: Improves/changes some of the jokers (based on my personal preference). Currently changed: Obelisk, Ride the Bus, Square Joker
+--- MOD_DESCRIPTION: Improves/changes some of the jokers (based on my personal preference). Currently changed: Obelisk, Ride the Bus, Square Joker, Seance
 
 --- PRIORITY: -5
 --- DISPLAY_NAME: Joker Tweaks
