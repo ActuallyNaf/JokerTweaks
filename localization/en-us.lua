@@ -10,6 +10,13 @@ return {
                 }
 			},
 			
+			j_seance = {
+				text={
+                    "{C:spectral}Spectral{} cards may",
+                    "appear in the shop",
+                }
+			},
+			
 			j_obelisk = {
 				text={
                     "This Joker gains {X:mult,C:white} X#1# {} Mult",
