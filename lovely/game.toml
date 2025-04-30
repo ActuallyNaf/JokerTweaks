@@ -6,11 +6,11 @@ dump_lua = true
 [patches.pattern]
 target = "game.lua"
 pattern = '''
-        j_square=           {order = 65,  unlocked = true, discovered = false, blueprint_compat = true, perishable_compat = false, eternal_compat = true, rarity = 1, cost = 4, name = "Square Joker", pos = {x=9,y=11}, set = "Joker", cost_mult = 1.0, config = {extra = {chips = 0, chip_mod = 4}}},
+j_square=           {order = 65,  unlocked = true, discovered = false, blueprint_compat = true, perishable_compat = false, eternal_compat = true, rarity = 1, cost = 4, name = "Square Joker", pos = {x=9,y=11}, set = "Joker", cost_mult = 1.0, config = {extra = {chips = 0, chip_mod = 4}}},
 '''
 position = "at"
 payload = '''
-        j_square=           {order = 65,  unlocked = true, discovered = false, blueprint_compat = true, perishable_compat = false, eternal_compat = true, rarity = 1, cost = 4, name = "Square Joker", pos = {x=9,y=11}, set = "Joker", cost_mult = 1.0, config = {extra = {chips = 0, chip_mod = 9}}},
+j_square=           {order = 65,  unlocked = true, discovered = false, blueprint_compat = true, perishable_compat = false, eternal_compat = true, rarity = 1, cost = 4, name = "Square Joker", pos = {x=9,y=11}, set = "Joker", cost_mult = 1.0, config = {extra = {chips = 0, chip_mod = 9}}},
 '''
 match_indent = true
 
@@ -18,20 +18,20 @@ match_indent = true
 [patches.pattern]
 target = "card.lua"
 pattern = '''
-                        if faces then
-                            local last_mult = self.ability.mult
-                            self.ability.mult = 0
-                            if last_mult > 0 then 
-                                return {
-                                    card = self,
-                                    message = localize('k_reset')
-                                }
-                            end
-                        else
+if faces then
+	local last_mult = self.ability.mult
+	self.ability.mult = 0
+	if last_mult > 0 then 
+		return {
+			card = self,
+			message = localize('k_reset')
+		}
+	end
+else
 '''
 position = "at"
 payload = '''
-                        if not faces then
+if not faces then
 '''
 match_indent = true
 
@@ -39,11 +39,11 @@ match_indent = true
 [patches.pattern]
 target = "game.lua"
 pattern = '''
-        j_obelisk=          {order = 75,  unlocked = true, discovered = false, blueprint_compat = true, perishable_compat = false, eternal_compat = true, rarity = 3, cost = 8, name = "Obelisk",set = "Joker", config = {extra = 0.2, Xmult = 1}, pos = {x=9,y=12}},
+j_obelisk=          {order = 75,  unlocked = true, discovered = false, blueprint_compat = true, perishable_compat = false, eternal_compat = true, rarity = 3, cost = 8, name = "Obelisk",set = "Joker", config = {extra = 0.2, Xmult = 1}, pos = {x=9,y=12}},
 '''
 position = "at"
 payload = '''
-        j_obelisk=          {order = 75,  unlocked = true, discovered = false, blueprint_compat = true, perishable_compat = false, eternal_compat = true, rarity = 3, cost = 8, name = "Obelisk",set = "Joker", config = {extra = 0.15, Xmult = 1}, pos = {x=9,y=12}},
+j_obelisk=          {order = 75,  unlocked = true, discovered = false, blueprint_compat = true, perishable_compat = false, eternal_compat = true, rarity = 3, cost = 8, name = "Obelisk",set = "Joker", config = {extra = 0.15, Xmult = 1}, pos = {x=9,y=12}},
 '''
 match_indent = true
 
@@ -51,18 +51,116 @@ match_indent = true
 [patches.pattern]
 target = "card.lua"
 pattern = '''
-                        if reset then
-                            if self.ability.x_mult > 1 then
-                                self.ability.x_mult = 1
-                                return {
-                                    card = self,
-                                    message = localize('k_reset')
-                                }
-                            end
-                        else
+if reset then
+	if self.ability.x_mult > 1 then
+		self.ability.x_mult = 1
+		return {
+			card = self,
+			message = localize('k_reset')
+		}
+	end
+else
 '''
 position = "at"
 payload = '''
-                        if not reset then
+if not reset then
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "game.lua"
+pattern = '''
+j_seance=           {order = 66,  unlocked = true, discovered = false, blueprint_compat = true, perishable_compat = true, eternal_compat = true, rarity = 2, cost = 6, name = "Seance", pos = {x=0,y=12}, set = "Joker", cost_mult = 1.0, config = {extra = {poker_hand = 'Straight Flush'}}},
+'''
+position = "at"
+payload = '''
+j_seance=           {order = 66,  unlocked = true, discovered = false, blueprint_compat = true, perishable_compat = true, eternal_compat = true, rarity = 2, cost = 6, name = "Seance", pos = {x=0,y=12}, set = "Joker", cost_mult = 1.0, config = {extra = 1}},
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = '''
+if self.ability.name == 'Seance' and #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
+	if next(context.poker_hands[self.ability.extra.poker_hand]) then
+		G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
+		G.E_MANAGER:add_event(Event({
+			trigger = 'before',
+			delay = 0.0,
+			func = (function()
+					local card = create_card('Spectral',G.consumeables, nil, nil, nil, nil, nil, 'sea')
+					card:add_to_deck()
+					G.consumeables:emplace(card)
+					G.GAME.consumeable_buffer = 0
+				return true
+			end)}))
+		return {
+			message = localize('k_plus_spectral'),
+			colour = G.C.SECONDARY_SET.Spectral,
+			card = self
+		}
+	end
+end
+'''
+position = "at"
+payload = '''
+
+'''
+match_indent = true
+
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = '''
+elseif self.ability.name == 'Seance' then loc_vars = {localize(self.ability.extra.poker_hand, 'poker_hands')}
+'''
+position = "at"
+payload = '''
+elseif self.ability.name == 'Seance' then
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = '''
+if self.ability.name == 'Chaos the Clown' then
+	SMODS.change_free_rerolls(1)
+	calculate_reroll_cost(true)
+end
+'''
+position = "at"
+payload = '''
+if self.ability.name == 'Chaos the Clown' then
+	SMODS.change_free_rerolls(1)
+	calculate_reroll_cost(true)
+end
+if self.ability.name == 'Seance' then
+	G.GAME.spectral_rate = G.GAME.spectral_rate + 2
+end
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = '''
+if self.ability.name == 'Chaos the Clown' then
+	SMODS.change_free_rerolls(-1)
+	calculate_reroll_cost(true)
+end
+'''
+position = "at"
+payload = '''
+if self.ability.name == 'Chaos the Clown' then
+	SMODS.change_free_rerolls(-1)
+	calculate_reroll_cost(true)
+end
+if self.ability.name == 'Seance' then
+	G.GAME.spectral_rate = G.GAME.spectral_rate - 2
+end
 '''
 match_indent = true
