@@ -17,6 +17,15 @@ return {
 					"in the shop"
                 }
 			},
+			j_green_joker={
+                name="Parity Perry",
+                text={
+                    "Played cards with even rank",
+                    "give {C:mult}-#1#{} Mult when scored,",
+                    "while cards with odd rank",
+                    "give {C:chips}-#2#{} Chips when scored",
+                },
+            },
 			
 			j_obelisk = {
 				text={
