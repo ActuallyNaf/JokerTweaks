@@ -12,8 +12,8 @@ return {
 			
 			j_seance = {
 				text={
-                    "{C:spectral}Spectral{} cards may",
-                    "appear in the shop",
+                    "{C:spectral}Spectral{} cards are more",
+                    "likely to appear in the shop",
                 }
 			},
 			
@@ -23,6 +23,14 @@ return {
                     "if played hand is not",
                     "your most played {C:attention}poker hand",
                     "{C:inactive}(Currently {X:mult,C:white} X#2# {C:inactive} Mult)",
+                }
+			},
+			
+			j_square = {
+				text={
+                    "If played hand has",
+                    "exactly {C:attention}4{} scoring cards,",
+                    "retrigger them all",
                 }
 			}
 		}
