@@ -245,3 +245,133 @@ if self.ability.name == 'Seance' then
 end
 '''
 match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "game.lua"
+pattern = '''
+j_green_joker=      {order = 58,  unlocked = true,  discovered = false, blueprint_compat = true, perishable_compat = false, eternal_compat = true, rarity = 1, cost = 4, name = 'Green Joker', pos = {x = 2, y = 11}, set = 'Joker', config = {extra = {hand_add = 1, discard_sub = 1}}},
+'''
+position = "at"
+payload = '''
+j_green_joker=      {order = 58,  unlocked = true,  discovered = false, blueprint_compat = true, perishable_compat = false, eternal_compat = true, rarity = 1, cost = 4, name = 'Green Joker', pos = {x = 2, y = 11}, set = 'Joker', config = {extra = {mult = 2, chips = 18}}},
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = '''
+elseif self.ability.name == 'Green Joker' then loc_vars = {self.ability.extra.hand_add, self.ability.extra.discard_sub, self.ability.mult}
+'''
+position = "at"
+payload = '''
+elseif self.ability.name == 'Green Joker' then loc_vars = {self.ability.extra.mult, self.ability.extra.chips}
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = '''
+if self.ability.name == 'Green Joker' and not context.blueprint and context.other_card == context.full_hand[#context.full_hand] then
+	local prev_mult = self.ability.mult
+	self.ability.mult = math.max(0, self.ability.mult - self.ability.extra.discard_sub)
+	if self.ability.mult ~= prev_mult then 
+		return {
+			message = localize{type='variable',key='a_mult_minus',vars={self.ability.extra.discard_sub}},
+			colour = G.C.RED,
+			card = self
+		}
+	end
+end
+'''
+position = "at"
+payload = '''
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = '''
+if self.ability.name == 'Green Joker' and not context.blueprint then
+	self.ability.mult = self.ability.mult + self.ability.extra.hand_add
+	return {
+		card = self,
+		message = localize{type='variable',key='a_mult',vars={self.ability.extra.hand_add}}
+	}
+end
+'''
+position = "at"
+payload = '''
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = '''
+if self.ability.name == 'Green Joker' and self.ability.mult > 0 then
+	return {
+		message = localize{type='variable',key='a_mult',vars={self.ability.mult}},
+		mult_mod = self.ability.mult
+	}
+end
+'''
+position = "at"
+payload = '''
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = '''
+if self.ability.name == 'Odd Todd' and
+((context.other_card:get_id() <= 10 and 
+context.other_card:get_id() >= 0 and
+context.other_card:get_id()%2 == 1) or
+(context.other_card:get_id() == 14))
+then
+	return {
+		chips = self.ability.extra,
+		card = self
+	}
+end
+'''
+position = "at"
+payload = '''
+if self.ability.name == 'Odd Todd' and
+((context.other_card:get_id() <= 10 and 
+context.other_card:get_id() >= 0 and
+context.other_card:get_id()%2 == 1) or
+(context.other_card:get_id() == 14))
+then
+	return {
+		chips = self.ability.extra,
+		card = self
+	}
+end
+if self.ability.name == 'Green Joker' then
+	if (context.other_card:get_id() <= 10 and 
+	context.other_card:get_id() >= 0 and
+	context.other_card:get_id()%2 == 1) or
+	(context.other_card:get_id() == 14)
+	then
+		return {
+			chips = self.ability.extra.chips,
+			card = self
+		}
+	elseif  context.other_card:get_id() <= 10 and 
+	context.other_card:get_id() >= 0 and
+	context.other_card:get_id()%2 == 0
+	then
+		return {
+			mult = self.ability.extra.mult,
+			card = self
+		}
+	end
+end
+'''
+match_indent = true

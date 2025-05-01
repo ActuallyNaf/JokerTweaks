@@ -20,10 +20,10 @@ return {
 			j_green_joker={
                 name="Parity Perry",
                 text={
-                    "Played cards with even rank",
-                    "give {C:mult}-#1#{} Mult when scored,",
+                    "Cards with even rank",
+                    "give {C:mult}+#1#{} Mult when scored,",
                     "while cards with odd rank",
-                    "give {C:chips}-#2#{} Chips when scored",
+                    "give {C:chips}+#2#{} Chips when scored",
                 },
             },
 			
