@@ -12,8 +12,9 @@ return {
 			
 			j_seance = {
 				text={
-                    "{C:spectral}Spectral{} cards are more",
-                    "likely to appear in the shop",
+                    "{C:spectral}Spectral{} cards are",
+                    "more likely to appear",
+					"in the shop"
                 }
 			},
 			
